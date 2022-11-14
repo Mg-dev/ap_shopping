@@ -9,4 +9,4 @@
     $id = $_GET['id'];
     $stmt = $pdo->prepare("DELETE FROM users WHERE id='$id'");
     $stmt->execute();
-    header("Location: user_list.php");
+    header("Location: index.php");

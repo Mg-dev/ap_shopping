@@ -43,7 +43,7 @@ function subwords( $str, $max = 24, $char = ' ', $end = '...' ) {
         <div class="row mb-2">
           <div class="col-sm-12 d-flex justify-content-between">
             <h1 class="m-0">Starter Page</h1>
-            <a href=""><button class="btn btn-success">New Blog Post</button></a>
+            <a href="product_add.php"><button class="btn btn-success">Add Product</button></a>
           </div><!-- /.col -->
           
         </div><!-- /.row -->
@@ -73,28 +73,31 @@ function subwords( $str, $max = 24, $char = ' ', $end = '...' ) {
 
                 if(empty($_POST['search'])){
                   
-                  $stmt = $pdo->prepare("SELECT * FROM categories ORDER BY id DESC");
+                  $stmt = $pdo->prepare("SELECT products.*,categories.name AS category_name FROM products LEFT JOIN categories ON products.category_id = categories.id ");
                   $stmt->execute();
                   $rawResult = $stmt->fetchAll();
 
                   $totalpages = ceil(count($rawResult)/ $numOfrecs);
 
-                  $stmt = $pdo->prepare("SELECT * FROM categories ORDER BY id DESC LIMIT $offset,$numOfrecs");
+                  $stmt = $pdo->prepare("SELECT products.*,categories.name AS category_name FROM products LEFT JOIN categories ON products.category_id = categories.id   LIMIT $offset,$numOfrecs");
                   $stmt->execute();
-                  $categories = $stmt->fetchAll();
+                  $products = $stmt->fetchAll();
+                  // print '<pre>';
+                  // print_r($products);
+                  // exit();
                 }else{
                   
 
                   $searchKey = $_POST['search'];
-                  $stmt = $pdo->prepare("SELECT * FROM categories WHERE name LIKE '%$searchKey%' ORDER BY id DESC");
+                  $stmt = $pdo->prepare("SELECT products.*,categories.name AS category_name FROM products LEFT JOIN categories ON products.category_id = categories.id WHERE name LIKE '%$searchKey%' ");
                   $stmt->execute();
                   $rawResult = $stmt->fetchAll();
 
                   $totalpages = ceil(count($rawResult)/ $numOfrecs);
 
-                  $stmt = $pdo->prepare("SELECT * FROM categories WHERE name LIKE '%$searchKey%' ORDER BY id DESC LIMIT $offset,$numOfrecs");
+                  $stmt = $pdo->prepare("SELECT products.*,categories.name AS category_name FROM products LEFT JOIN categories ON products.category_id = categories.id WHERE name LIKE '%$searchKey%'  LIMIT $offset,$numOfrecs");
                   $stmt->execute();
-                  $posts = $stmt->fetchAll();  
+                  $products = $stmt->fetchAll();  
                 }
                 
               ?> 
@@ -112,25 +115,28 @@ function subwords( $str, $max = 24, $char = ' ', $end = '...' ) {
                     </tr>
                   </thead>
                   <tbody>
-                   
-                            <tr class="">
-                              <td></td>
-                              <td></td>
-                              <td></td>
-                              <td></td>
-                              <td></td>
+                   <?php
+                      foreach($products as $product){
+                        ?>
+                        <tr class="">
+                              <td><?php echo $product['id'] ?></td>
+                              <td><?php echo $product['name'] ?></td>
+                              <td><?php echo $product['description'] ?></td>
+                              <td><?php echo $product['price'] ?></td>
+                              <td><?php echo $product['quantity'] ?></td>
                               <td>
-                                    
+                              <?php echo $product['category_name'] ?>
                               </td>
                               <td class="">
                                 <div class="btn-group">
                                 <div class="container">
-                                <a href="edit.php?id=<?php echo $post['id']; ?>"><button class="btn btn-warning me-2 ">Edit</button></a>
+                                <a href="product_edit.php?id=<?php echo $product['id']; ?>"><button class="btn btn-warning me-2 ">Edit</button></a>
                                 
 
                                 </div>
                                 <div class="container">
-                                <a href="delete.php?id=<?php echo escape($post['id']); ?>">
+                                <!-- <?php echo escape($product['id']); ?> -->
+                                <a href="product_delete.php?id=<?php echo escape($product['id']); ?>">
                               
                                   <button class="btn btn-danger ">Delete</button>
                                 </a>
@@ -140,6 +146,10 @@ function subwords( $str, $max = 24, $char = ' ', $end = '...' ) {
                                 
                               </td>
                             </tr> 
+                        <?php
+                      }
+                   ?>
+                            
                           
                     
                     
