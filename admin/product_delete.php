@@ -9,4 +9,4 @@ session_start();
     $product_id = $_GET['id'];
     $stmt = $pdo->prepare("DELETE FROM products WHERE id='$product_id'");
     $stmt->execute();
-    echo "<script>alert('Deleted Successfully!');;window.location.href = 'categories.php'</script>";
+    echo "<script>alert('Deleted Successfully!');;window.location.href = 'index.php'</script>";

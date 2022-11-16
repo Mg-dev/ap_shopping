@@ -30,30 +30,36 @@
         $page = end($link_array);
         // echo $page;
       ?>
-
-         <form action="<?php switch ($page) {
-                                                  case 'index.php':
-                                                      echo 'index.php';
-                                                      break;
-                                                  case "user_list.php":
-                                                      echo "user_list.php";
-                                                      break;
-                                                  case "categories.php":
-                                                      echo "categories.php";
-                                                      break;
-                                                  } ?>" method="post">
-         <input type="hidden" name="_token" value="<?php echo $_SESSION['_token']; ?>" />
+      <?php  
+        if($page!='order_list.php'){
+          ?>
+          <form action="<?php switch ($page) {
+            case 'index.php':
+                echo 'index.php';
+                break;
+            case "user_list.php":
+                echo "user_list.php";
+                break;
+            case "categories.php":
+                echo "categories.php";
+                break;
+            } ?>" method="post">
+            <input type="hidden" name="_token" value="<?php echo $_SESSION['_token']; ?>" />
             <div class="form-inline">
-                <div class="input-group" >
-                  <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search" name="search">
-                  
-                    <button class="btn btn-sidebar">
-                      <i class="fas fa-search fa-fw"></i>
-                    </button>
-                 
-                </div>
-              </div>
-         </form>
+            <div class="input-group" >
+            <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search" name="search">
+
+            <button class="btn btn-sidebar">
+            <i class="fas fa-search fa-fw"></i>
+            </button>
+
+            </div>
+            </div>
+            </form>
+            <?php
+        }
+        ?>
+         
       </li>
       
     </ul>
@@ -122,6 +128,14 @@
               <i class="nav-icon fas fa-user"></i>
               <p>
                 User
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="./order_list.php" class="nav-link">
+              <i class="nav-icon fas fa-table"></i>
+              <p>
+                Orders
               </p>
             </a>
           </li>
