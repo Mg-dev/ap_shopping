@@ -69,8 +69,8 @@ include('header.php');
                     ?>
                 <div class="col-12">
                     <div class="card  text-center">
-                        <div class="card-header d-flex justify-content-center">
-                            <h3 class="card-title">User list</h3>
+                        <div class="card-header d-flex justify-content-start">
+                            <h3 class="card-title">User listing</h3>
                         </div>
                         <div class="card-body">
                             <table class="table table-striped">

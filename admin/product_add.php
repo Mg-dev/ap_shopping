@@ -8,18 +8,26 @@
     // print_r($_POST);
     // exit();
     if($_POST){
-      if(empty($_POST['name']) || empty($_POST['description'])  ){
+      if(empty($_POST['name']) || empty($_POST['description']) || empty($_POST['price']) || empty($_POST['quantity']) || empty($_POST['category_id'])  ){
         if(empty($_POST['name'])){
             $nameErr = "name is required!";
           }
           if(empty($_POST['description'])){
             $descriptionErr = "description is required!";
           }
+          if(empty($_FILES['image']['name'])){
+            $imageErr = "Image is required!";
+          }
           if(empty($_POST['price'])){
             $priceErr = "price is required!";
+          }elseif (is_numeric($_POST['price'])) {
+            $priceErr = "price value should be integer";
           }
           if(empty($_POST['quantity'])){
             $quantityErr = "quantity is required!";
+          }
+          elseif (is_numeric($_POST['quantity'])) {
+            $quantityErr = "quantity value should be integer";
           }
           if(empty($_POST['category'])){
             $categoryErr = "category is required!";
@@ -29,23 +37,31 @@
           }
           
     }else{
-      
+            $file = '../images/'.($_FILES['image']['name']);
+            $imageType = pathinfo($file,PATHINFO_EXTENSION);
+            
+            if($imageType != 'png' && $imageType != 'jpg' &&  $imageType != 'jpeg'){
+                echo "<script>alert('PNG, JPG and JPEG only allow!');</script>";
+            }else{
             $name = $_POST['name'];
             $description = $_POST['description'];
+            $image = $_FILES['image']['name'];
+            move_uploaded_file($_FILES['image']['tmp_name'],$file);
             $price = $_POST['price'];
             $quantity = $_POST['quantity'];
             $category_id = $_POST['category_id'];
             
-            $stmt = $pdo->prepare("INSERT INTO products(name,description,price,quantity,category_id) VALUES (:name,:description,:price,:quantity,:category_id)");
+            $stmt = $pdo->prepare("INSERT INTO products(name,description,image,price,quantity,category_id) VALUES (:name,:description,:image,:price,:quantity,:category_id)");
             $result = $stmt->execute(
-                array(':name'=>$name,':description'=>$description,':price'=>$price,':quantity'=>$quantity,':category_id'=>$category_id,)
+                array(':name'=>$name,':description'=>$description,':image'=>$image,':price'=>$price,':quantity'=>$quantity,':category_id'=>$category_id,)
             );
 
             if($result){
                 echo "<script>alert('Created Successfully!');;window.location.href = 'index.php'</script>";
             }
-        }
+          }
     }
+  }
         
     
 ?>
@@ -92,14 +108,7 @@
                             <?php if(empty($nameErr)) { echo ''; } else { echo $nameErr;} ?>
                           </span> 
                         </div>
-                        <div class="form-group">
-                          <div>
-                                <label for="">Image</label>
-                                <br>
-                                <input type="file" class="form-control" name="image" >
-                          </div>
-                          
-                        </div>
+                        
                         <div class="form-group">
                           <div>
                                 <label for="">Description</label><br>
@@ -111,6 +120,16 @@
                             <?php if(empty($descriptionErr)) { echo ''; } else { echo $descriptionErr;} ?>
                           </span>
                           </span> 
+                        </div>
+                        <div class="form-group">
+                          <div>
+                                <label for="">Image</label>
+                                <br>
+                                <input type="file" class="form-control" name="image" >
+                          </div>
+                          <span class="text-danger">
+                          <?php if(empty($imageErr)) { echo ''; } else { echo $imageErr;} ?>
+                          </span>
                         </div>
                         <div class="form-group">
                           <div>
@@ -191,4 +210,4 @@
   <!-- /.content-wrapper -->
 
   <!-- Control Sidebar -->
-    <?php include('footer.html') ?>
+<?php include('footer.html') ?>

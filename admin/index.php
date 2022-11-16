@@ -108,20 +108,24 @@ function subwords( $str, $max = 24, $char = ' ', $end = '...' ) {
                       <th style="width: 10px">#</th>
                       <th>name</th>
                       <th>description</th>
+                      <th>image</th>
                       <th>price</th>
                       <th>quantity</th>
                       <th>category_name</th>
                       <th style="width: 40px">Action</th>
                     </tr>
                   </thead>
+                  
                   <tbody>
                    <?php
                       foreach($products as $product){
                         ?>
-                        <tr class="">
-                              <td><?php echo $product['id'] ?></td>
+                      
+                        <tr class="p-0">
+                              <td  style="height:100px;"><?php echo $product['id'] ?></td>
                               <td><?php echo $product['name'] ?></td>
                               <td><?php echo $product['description'] ?></td>
+                              <td><img src="../images/<?php echo $product['image']; ?>" class="img-thumbnail" width="100" alt=""></td>
                               <td><?php echo $product['price'] ?></td>
                               <td><?php echo $product['quantity'] ?></td>
                               <td>

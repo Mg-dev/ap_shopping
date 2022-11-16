@@ -6,51 +6,35 @@
       header('Location: login.php');
     }
     if($_POST){
-        if(empty($_POST['name'])||empty($_POST['email'])||empty($_POST['password'])||strlen($_POST['password'])<6){
-            if(empty($_POST['name'])){
-              $nameErr = "name is required!";
-            }
-            if(empty($_POST['email'])){
-              $emailErr = "email is required!";
-            }
-            if(strlen($_POST['password'])<6){
-              $pwdErr = "password should be six characters at least!";
-            }
-            if(empty($_POST['password'])){
-              $pwdErr = "password is required!";
-            }
-        }else{
-            $id = $_POST['id'];
+      if(empty($_POST['name']) || empty($_POST['description'])  ){
+        if(empty($_POST['name'])){
+            $nameErr = "name is required!";
+          }
+          if(empty($_POST['description'])){
+            $descriptionErr = "description is required!";
+          }
+    }else{
+      
             $name = $_POST['name'];
-            $email = $_POST['email'];
-            $password = $_POST['password'];
-            $password = password_hash($password,PASSWORD_DEFAULT);
-            if(!empty($_POST['role'])){
-                $role = 1;
-            }else{
-                $role = 0;
-            }
-            print_r($id);
-            // exit();
-            $stmt = $pdo->prepare('SELECT * FROM users WHERE email=:email AND id!=:id');
-            $stmt->execute(array(':email'=>$email,':id'=>$id));
-            $user = $stmt->fetch(PDO::FETCH_ASSOC);
-            if($user){
-                echo "<script>alert('Email duplicated!');</script>";
-            }else{
-                $stmt = $pdo->prepare("UPDATE users SET name='$name',email='$email',password='$password',role='$role' WHERE id='$id'");
-                $result = $stmt->execute();
-        
-                    if($result){
-                        echo "<script>alert(' Successfully Updated!');window.location.href = 'user_list.php';</script>";
-                    }
+            $description = $_POST['description'];
+            $id = $_POST['id'];
+            
+            $stmt = $pdo->prepare("UPDATE categories SET name=:name, description=:description  WHERE id=:id");
+            $result = $stmt->execute(
+                array(':name'=>$name,':description'=>$description,':id'=>$id)
+            );
+
+            if($result){
+                echo "<script>alert('Updated Successfully!');;window.location.href = 'categories.php'</script>";
             }
         }
-        
     }
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE id=".$_GET['id']);
+    $stmt = $pdo->prepare("SELECT * FROM products WHERE id=".$_GET['id']);
     $stmt->execute();
-    $user = $stmt->fetch();
+
+    $product = $stmt->fetch();
+        
+    
 ?>
 <?php include('header.php'); ?>
 

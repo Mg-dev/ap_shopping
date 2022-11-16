@@ -2,8 +2,8 @@
 
 define('MYSQL_USER','root');
 define('MYSQL_PASSWORD','');
-define('MYSQL_HOST','localhost:3307');
-define('MYSQL_DATABASE','shopping');
+define('MYSQL_HOST','localhost');
+define('MYSQL_DATABASE','ap_shopping');
 
 $options = array(
     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
