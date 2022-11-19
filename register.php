@@ -1,3 +1,55 @@
+<?php
+session_start();
+require './config/config.php';
+require './config/common.php';
+if($_POST){
+	if(empty($_POST['name'])||empty($_POST['email'])||empty($_POST['password'])||empty($_POST['phone'])||empty($_POST['address'])||strlen($_POST['password'])<4){
+		if(empty($_POST['name'])){
+			$nameErr = 'name is required';
+		}
+		if(empty($_POST['email'])){
+			$emailErr = 'email is required';
+		}
+		if(empty($_POST['password'])){
+			$passwordErr = 'password is required';
+		}elseif(strlen($_POST['password'])<4){
+			$passwordErr = 'password should be at least 4 characters!';
+		}
+		if(empty($_POST['phone'])){
+			$phoneErr = 'phone is required';
+		}
+		if(empty($_POST['address'])){
+			$addressErr = 'address is required';
+		}
+		
+		
+	}else{
+		$name=$_POST['name'];
+		$email=$_POST['email'];
+		$password=password_hash($_POST['password'],PASSWORD_DEFAULT);
+		$phone=$_POST['phone'];
+		$address=$_POST['address'];
+		$stmt = $pdo->prepare("SELECT * FROM users WHERE email=:email");
+		$result = $stmt->execute(
+			array("email"=>$email)
+		);
+		$user = $stmt->fetch(PDO::FETCH_ASSOC);
+		if($user){
+			echo "<script>alert('Email Duplicated! Try Again.');</script>";
+		}else{
+			$stmt = $pdo->prepare("INSERT INTO users(name,email,password,phone,address) VALUES (:name,:email,:password,:phone,:address)");
+			$result = $stmt->execute(
+				array("name"=>$name,"email"=>$email,"password"=>$password,"phone"=>$phone,"address"=>$address,)
+			);
+			if($result){
+				echo "<script>alert('You have been registerd sucessfully!Please Login..');window.location.href='login.php';</script>";
+			}
+			
+		}
+	}
+}
+
+?>
 <!DOCTYPE html>
 <html lang="zxx" class="no-js">
 
@@ -83,42 +135,53 @@
 	<!-- End Banner Area -->
 
 	<!--================Login Box Area =================-->
-	<section class="login_box_area section_gap">
+	<section class="login_box_area ">
 		<div class="container">
 			<div class="row">
-				<div class="col-lg-6">
-					<div class="login_box_img">
-						<img class="img-fluid" src="img/login.jpg" alt="">
-						<div class="hover">
-							<h4>New to our website?</h4>
-							<p>There are advances being made in science and technology everyday, and a good example of this is the</p>
-							<a class="primary-btn" href="register.html">Create an Account</a>
-						</div>
-					</div>
-				</div>
-				<div class="col-lg-6">
+				
+				<div class="col-lg-6 offset-3">
 					<div class="login_form_inner">
-						<h3>Log in to enter</h3>
+						<h3 class="text-center">Register<br> to use your<br> Shopping Account</h3>
 						<form class="row login_form" action="register.php" method="post" id="contactForm" novalidate="novalidate">
+						<input type="hidden" name="_token" value="<?php echo $_SESSION['_token']; ?>" />
 							<div class="col-md-12 form-group">
-								<input type="text" class="form-control" id="name" name="name" placeholder="Name" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Name'">
+								<input style="<?php echo (empty($nameErr) ?'':'border:1px solid red;') ?>"
+								style="<?php echo (empty($nameErr) ?'':'border:1px solid red;') ?>"
+								
+								 type="text" class="form-control" id="name" name="name" placeholder="Name" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Name'">
+								
+								<span class="text-danger" style="display: block;text-align:left;">
+									<?php if(empty($nameErr)) { echo ''; } else { echo $nameErr;} ?>
+								</span> 
 							</div>
 							<div class="col-md-12 form-group">
-								<input type="text" class="form-control" id="name" name="email" placeholder="Email" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Email'">
+								<input style="<?php echo (empty($emailErr) ?'':'border:1px solid red;') ?>" type="text" class="form-control" id="name" name="email" placeholder="Email" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Email'">
+							<span  class="text-danger" style="display: block;text-align:left;">
+									<?php if(empty($emailErr)) { echo ''; } else { echo $emailErr;} ?>
+								</span > 
 							</div>
 							<div class="col-md-12 form-group">
-								<input type="text" class="form-control" id="name" name="password" placeholder="Password" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Password'">
+								<input style="<?php echo (empty($passwordErr) ?'':'border:1px solid red;') ?>" type="text" class="form-control" id="name" name="password" placeholder="Password" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Password'">
+							<span  class="text-danger" style="display: block;text-align:left;">
+									<?php if(empty($passwordErr)) { echo ''; } else { echo $passwordErr;} ?>
+								</span > 
 							</div>
 							<div class="col-md-12 form-group">
-								<input type="text" class="form-control" id="name" name="phone" placeholder="Phone" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Phone'">
+								<input style="<?php echo (empty($phoneErr) ?'':'border:1px solid red;') ?>" type="text" class="form-control" id="name" name="phone" placeholder="Phone" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Phone'">
+							<span  class="text-danger" style="display: block;text-align:left;">
+									<?php if(empty($phoneErr)) { echo ''; } else { echo $phoneErr;} ?>
+								</span > 
 							</div>
 							<div class="col-md-12 form-group">
-								<input type="text" class="form-control" id="name" name="address" placeholder="Address" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Address'">
+								<input style="<?php echo (empty($addressErr) ?'':'border:1px solid red;') ?>" type="text" class="form-control" id="name" name="address" placeholder="Address" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Address'">
+							<span  class="text-danger" style="display: block;text-align:left;">
+									<?php if(empty($addressErr)) { echo ''; } else { echo $addressErr;} ?>
+								</span > 
 							</div>
 							
 							<div class="col-md-12 form-group">
 								<button type="submit" value="submit" class="primary-btn">Register</button>
-                                <a href="login.php"></a>
+                                <a href="login.php" class="btn btn-primary text-white">Login</a>
 
 								
 							</div>

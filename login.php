@@ -112,7 +112,7 @@
 					<h1>Login/Register</h1>
 					<nav class="d-flex align-items-center">
 						<a href="index.html">Home<span class="lnr lnr-arrow-right"></span></a>
-						<a href="register.html">Login/Register</a>
+						<a href="register.php">Login/Register</a>
 					</nav>
 				</div>
 			</div>
@@ -130,7 +130,7 @@
 						<div class="hover">
 							<h4>New to our website?</h4>
 							<p>There are advances being made in science and technology everyday, and a good example of this is the</p>
-							<a class="primary-btn" href="register.html">Create an Account</a>
+							<a class="primary-btn" href="register.php">Create an Account</a>
 						</div>
 					</div>
 				</div>
