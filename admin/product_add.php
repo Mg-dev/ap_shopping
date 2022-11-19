@@ -40,7 +40,7 @@
             $file = '../images/'.($_FILES['image']['name']);
             $imageType = pathinfo($file,PATHINFO_EXTENSION);
             
-            if($imageType != 'png' && $imageType != 'jpg' &&  $imageType != 'jpeg'){
+            if($imageType != 'png' && $imageType != 'jpg' &&  $imageType != 'jpeg' &&  $imageType != 'webp'){
                 echo "<script>alert('PNG, JPG and JPEG only allow!');</script>";
             }else{
             $name = $_POST['name'];
