@@ -2,10 +2,12 @@
 
 session_start();
 require '../config/config.php';
-require '../config/common.php';
 if(empty($_SESSION['user_id'] && $_SESSION['logged_in'])){
     header('Location: login.php');
 }
+if($_SESSION['role']!=1){
+    header('Location: login.php');
+  }
 include('header.php');
 
 ?>
@@ -80,6 +82,8 @@ include('header.php');
                                         <th>Id</th>
                                         <td>name</td>
                                         <td>email</td>
+                                        <td>phone</td>
+                                        <td>address</td>
                                         <td>role</td>
                                         <td></td>
                                     </tr>
@@ -93,6 +97,8 @@ include('header.php');
                                         <th><?php echo $i  ?></th>
                                         <td><?php echo escape($u['name']); ?></td>
                                         <td><?php echo escape($u['email']); ?></td>
+                                        <td><?php echo escape($u['phone']); ?></td>
+                                        <td><?php echo escape($u['address']); ?></td>
                                         <td>
                                             <?php
 
@@ -141,7 +147,7 @@ include('header.php');
                   </li>
                   <li class="page-item"><a class="page-link" href="?pageno=<?php echo $totalpages; ?>">Last</a></li>
                 </ul>
-              </div>
+            </div>
         </div><!-- /.container-fluid -->
     </div>
     <!-- /.content -->

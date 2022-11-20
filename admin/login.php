@@ -25,13 +25,15 @@
       $stmt->execute();
       $user = $stmt->fetch(PDO::FETCH_ASSOC);
       
-      if($user['role'] == 1){
+      if($user){
+        if($user['role']=== 1){
           if(password_verify($password,$user['password'])){
               $_SESSION['user_id'] = $user['id'];
               $_SESSION['user_name'] = $user['name'];
               $_SESSION['logged_in'] = time();
+              $_SESSION['role'] = 1;
               header('Location: index.php');
-          }
+          }}
       }
 
       echo "<script>alert('Incorrect credentials')</script>";

@@ -25,13 +25,25 @@
       </li>
 
       <?php
+      if(session_status()==PHP_SESSION_NONE){
+        session_start();
+      }
+      require '../config/common.php';
+      if(!empty($_POST['search'])){
+        setcookie('search',$_POST['search'], time() + (86400*30) , '/');
+      }else{
+        if(empty($_GET['pageno'])){
+          unset($_COOKIE['search']);
+          setcookie('search',null,-1 , '/');
+        }
+      }
         $link = $_SERVER['PHP_SELF'];
         $link_array = explode('/',$link);
         $page = end($link_array);
-        // echo $page;
+       
       ?>
       <?php  
-        if($page!='order_list.php'){
+        if($page=="index.php"||$page=="user_list.php"||$page=="categories.php"){
           ?>
           <form action="<?php switch ($page) {
             case 'index.php':

@@ -1,12 +1,12 @@
 <?php
     session_start();
     require '../config/config.php';
-    require '../config/common.php';
     if(empty($_SESSION['user_id']&&$_SESSION['logged_in'])){
       header('Location: login.php');
     }
-    // print_r($_POST);
-    // exit();
+    if($_SESSION['role']!=1){
+      header('Location: login.php');
+    }
     if($_POST){
       if(empty($_POST['name']) || empty($_POST['description']) || empty($_POST['price']) || empty($_POST['quantity']) || empty($_POST['category_id'])  ){
         if(empty($_POST['name'])){
@@ -20,23 +20,19 @@
           }
           if(empty($_POST['price'])){
             $priceErr = "price is required!";
-          }elseif (is_numeric($_POST['price'])) {
-            $priceErr = "price value should be integer";
           }
           if(empty($_POST['quantity'])){
             $quantityErr = "quantity is required!";
           }
-          elseif (is_numeric($_POST['quantity'])) {
-            $quantityErr = "quantity value should be integer";
-          }
+          
           if(empty($_POST['category'])){
             $categoryErr = "category is required!";
           }
           if(empty($_POST['description'])){
             $descriptionErr = "description is required!";
-          }
-          
+          }   
     }else{
+      
             $file = '../images/'.($_FILES['image']['name']);
             $imageType = pathinfo($file,PATHINFO_EXTENSION);
             
@@ -55,7 +51,6 @@
             $result = $stmt->execute(
                 array(':name'=>$name,':description'=>$description,':image'=>$image,':price'=>$price,':quantity'=>$quantity,':category_id'=>$category_id,)
             );
-
             if($result){
                 echo "<script>alert('Created Successfully!');;window.location.href = 'index.php'</script>";
             }
@@ -157,7 +152,7 @@
                         <div class="form-group">
                           <div>
                                 <label for="">Price</label><br>
-                                <input type="number" class="form-control" name="price">
+                                <input type="text" class="form-control" name="price">
                                 <span class="text-danger">
                           </div>
                           <span class="text-danger">
@@ -169,7 +164,7 @@
                         <div class="form-group">
                           <div>
                                 <label for="">Qty</label><br>
-                                <input type="number" class="form-control" name="quantity">
+                                <input type="text" class="form-control" name="quantity">
                                 <span class="text-danger">
                           </div>
                           <span class="text-danger">

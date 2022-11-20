@@ -1,12 +1,18 @@
 <?php
-session_start();
+if(session_status()==PHP_SESSION_NONE){
+  session_start();
+}
 require '../config/config.php';
-require '../config/common.php';
-if(empty($_SESSION['user_id']&&$_SESSION['logged_in'])){
+
+if(empty($_SESSION['user_id'] && $_SESSION['logged_in'])){
+    header('Location: login.php');
+}
+if($_SESSION['role']!=1){
   header('Location: login.php');
 }
+?>
 
-
+<?php
 function subwords( $str, $max = 24, $char = ' ', $end = '...' ) {
   $str = trim( $str ) ;
   $str = $str . $char ;
@@ -62,45 +68,35 @@ function subwords( $str, $max = 24, $char = ' ', $end = '...' ) {
               </div>
               <!-- /.card-header -->
 
-              <?php
-                if(!empty($_GET['pageno'])){
-                  $pageno = $_GET['pageno'];
-                }else{
-                  $pageno = 1;
-                }
-                $numOfrecs = 3;
-                $offset = ($pageno - 1) * $numOfrecs;
+              <?php  
+                    
+                    if(!empty($_GET['pageno'])){
+                            $pageno = $_GET['pageno'];
+                        }else{
+                            $pageno = 1;
+                        }
+                        $numOfrecs = 1;
+                        $offset = ($pageno - 1) * $numOfrecs;
 
-                if(empty($_POST['search'])){
-                  
-                  $stmt = $pdo->prepare("SELECT products.*,categories.name AS category_name FROM products LEFT JOIN categories ON products.category_id = categories.id ");
-                  $stmt->execute();
-                  $rawResult = $stmt->fetchAll();
-
-                  $totalpages = ceil(count($rawResult)/ $numOfrecs);
-
-                  $stmt = $pdo->prepare("SELECT products.*,categories.name AS category_name FROM products LEFT JOIN categories ON products.category_id = categories.id   LIMIT $offset,$numOfrecs");
-                  $stmt->execute();
-                  $products = $stmt->fetchAll();
-                  // print '<pre>';
-                  // print_r($products);
-                  // exit();
-                }else{
-                  
-
-                  $searchKey = $_POST['search'];
-                  $stmt = $pdo->prepare("SELECT products.*,categories.name AS category_name FROM products LEFT JOIN categories ON products.category_id = categories.id WHERE name LIKE '%$searchKey%' ");
-                  $stmt->execute();
-                  $rawResult = $stmt->fetchAll();
-
-                  $totalpages = ceil(count($rawResult)/ $numOfrecs);
-
-                  $stmt = $pdo->prepare("SELECT products.*,categories.name AS category_name FROM products LEFT JOIN categories ON products.category_id = categories.id WHERE name LIKE '%$searchKey%'  LIMIT $offset,$numOfrecs");
-                  $stmt->execute();
-                  $products = $stmt->fetchAll();  
-                }
-                
-              ?> 
+                        if(empty($_POST['search'])&&empty($_COOKIE['search'])){
+                            $stmt = $pdo->prepare("SELECT products.*,categories.name AS category_name FROM products LEFT JOIN categories ON products.category_id = categories.id ORDER BY id ASC");
+                            $stmt->execute();
+                            $rawResult = $stmt->fetchAll();
+                            $totalpages = ceil(count($rawResult)/$numOfrecs);
+                            $stmt = $pdo->prepare("SELECT products.*,categories.name AS category_name FROM products LEFT JOIN categories ON products.category_id = categories.id ORDER BY id ASC LIMIT $offset,$numOfrecs");
+                            $stmt->execute();
+                            $products = $stmt->fetchAll();
+                          }else{
+                            $searchKey = $_POST['search'] ? $_POST['search'] : $_COOKIE['search'];
+                            $stmt = $pdo->prepare("SELECT products.*,categories.name AS category_name FROM products LEFT JOIN categories ON products.category_id = categories.id   WHERE  products.name LIKE '%$searchKey%'   ORDER BY id DESC");
+                            $stmt->execute();
+                            $rawResult = $stmt->fetchAll();  
+                            $totalpages = ceil(count($rawResult)/ $numOfrecs);
+                            $stmt = $pdo->prepare("SELECT products.*,categories.name AS category_name FROM products LEFT JOIN categories ON products.category_id = categories.id  WHERE products.name LIKE '%$searchKey%'  ORDER BY id DESC LIMIT $offset,$numOfrecs");
+                            $stmt->execute();
+                            $products = $stmt->fetchAll();  
+                          }
+                    ?>
             <div class="card-body">
                 <table class="table table-bordered">
                   <thead>
@@ -118,6 +114,7 @@ function subwords( $str, $max = 24, $char = ' ', $end = '...' ) {
                   
                   <tbody>
                    <?php
+                      
                       foreach($products as $product){
                         ?>
                       
@@ -158,8 +155,22 @@ function subwords( $str, $max = 24, $char = ' ', $end = '...' ) {
                     
                     
                   </tbody>
+                  
+            </div>
                 </table>
               </div>
+              <div class="card-footer clearfix">
+                <ul class="pagination pagination-sm m-0 float-right">
+                  <li class="page-item"><a class="page-link" href="?pageno=1">First</a></li>
+                  <li class="page-item <?php if($pageno<=1) { echo "disabled";}  ?> ">
+                    <a class="page-link" href="<?php if($pageno<=1) { echo "#";} else { echo "?pageno=".($pageno-1);}  ?>">Previous</a>
+                  </li>
+                  <li class="page-item"><a class="page-link" href="#"><?php echo $pageno; ?></a></li>
+                  <li class="page-item <?php if($pageno>=$totalpages) { echo "disabled";}  ?>">
+                    <a class="page-link" href="<?php if($pageno>=$totalpages) { echo "#";} else { echo "?pageno=".($pageno+1);}  ?>">Next</a>
+                  </li>
+                  <li class="page-item"><a class="page-link" href="?pageno=<?php echo $totalpages; ?>">Last</a></li>
+                </ul></div>
             <!-- /.card -->
             </div>
             <!-- /.card -->

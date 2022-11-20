@@ -1,42 +1,47 @@
-<?php include('header.php') ?>
-
 <?php
-				if(session_status()==PHP_SESSION_NONE){
-					session_start();
-				}
-				require('./config/config.php');
-				require('./config/common.php');
-                if(!empty($_GET['pageno'])){
-                  $pageno = $_GET['pageno'];
-                }else{
-                  $pageno = 1;
-                }
-                $numOfrecs = 3;
-                $offset = ($pageno - 1) * $numOfrecs;
+if(!empty($_POST['search'])){
+	setcookie('search',$_POST['search'], time() + (86400*30) , '/');
+  }else{
+	if(empty($_GET['pageno'])){
+	  unset($_COOKIE['search']);
+	  setcookie('search',null,-1 , '/');
+	}
+  }
+?>
+<?php include('header.php') ?>
+  
+<?php
+				if(!empty($_GET['pageno'])){
+					$pageno = $_GET['pageno'];
+				  }else{
+					$pageno = 1;
+				  }
+				  $numOfrecs = 2;
+				  $offset = ($pageno - 1) * $numOfrecs;
+				  
+				  if(empty($_POST['search']) && empty($_COOKIE['search'])){
+					$stmt = $pdo->prepare("SELECT products.*,categories.name AS category_name FROM products LEFT JOIN categories ON products.category_id = categories.id ");
+					$stmt->execute();
+					$rawResult = $stmt->fetchAll();
+					$totalpages = ceil(count($rawResult)/ $numOfrecs);
+					$stmt = $pdo->prepare("SELECT products.*,categories.name AS category_name FROM products LEFT JOIN categories ON products.category_id = categories.id   LIMIT $offset,$numOfrecs");
+					$stmt->execute();
+					$products = $stmt->fetchAll();
+				  }else{
+					$searchKey = $_POST['search'] ? $_POST['search'] : $_COOKIE['search'];
+					$stmt = $pdo->prepare("SELECT products.*,categories.name AS category_name FROM products LEFT JOIN categories ON products.category_id = categories.id WHERE products.name LIKE '%$searchKey%' ");
+					$stmt->execute();
+					$rawResult = $stmt->fetchAll();
+					$totalpages = ceil(count($rawResult)/ $numOfrecs);
+					$stmt = $pdo->prepare("SELECT products.*,categories.name AS category_name FROM products LEFT JOIN categories ON products.category_id = categories.id WHERE products.name LIKE '%$searchKey%'  LIMIT $offset,$numOfrecs");
+					$stmt->execute();
+					$products = $stmt->fetchAll();  
+				  }
 				
-                if(empty($_POST['search'])){
-                  $stmt = $pdo->prepare("SELECT products.*,categories.name AS category_name FROM products LEFT JOIN categories ON products.category_id = categories.id ");
-                  $stmt->execute();
-                  $rawResult = $stmt->fetchAll();
-                  $totalpages = ceil(count($rawResult)/ $numOfrecs);
-                  $stmt = $pdo->prepare("SELECT products.*,categories.name AS category_name FROM products LEFT JOIN categories ON products.category_id = categories.id   LIMIT $offset,$numOfrecs");
-                  $stmt->execute();
-                  $products = $stmt->fetchAll();
-                }else{
-                  $searchKey = $_POST['search'];
-                  $stmt = $pdo->prepare("SELECT products.*,categories.name AS category_name FROM products LEFT JOIN categories ON products.category_id = categories.id WHERE name LIKE '%$searchKey%' ");
-                  $stmt->execute();
-                  $rawResult = $stmt->fetchAll();
-                  $totalpages = ceil(count($rawResult)/ $numOfrecs);
-                  $stmt = $pdo->prepare("SELECT products.*,categories.name AS category_name FROM products LEFT JOIN categories ON products.category_id = categories.id WHERE name LIKE '%$searchKey%'  LIMIT $offset,$numOfrecs");
-                  $stmt->execute();
-                  $products = $stmt->fetchAll();  
-                }
-				$catStmt = $pdo->prepare("SELECT * FROM categories");
-				$catStmt->execute();
-				$categories = $catStmt->fetchAll();
+                
+				
 				if(!empty($_GET['id'])){
-					$stmt = $pdo->prepare("SELECT * FROM products WHERE category_id=:id");
+					$stmt = $pdo->prepare("SELECT * FROM products WHERE category_id=:id LIMIT $offset,$numOfrecs");
 					$stmt->execute(
 						array("id"=>$_GET['id'])
 					);
@@ -52,14 +57,17 @@
 				<div class="sidebar-categories">
 					<div class="head">Browse Categories</div>
 					<ul class="main-categories">
-					<li class="main-nav-list"><a  href="./index.php?id=" ><span
+					<li class="main-nav-list"><a  href="./index.php" ><span
 								 class="lnr lnr-arrow-right"></span>All</a>
 								</li>
 						<?php
+						$catStmt = $pdo->prepare("SELECT * FROM categories");
+						$catStmt->execute();
+						$categories = $catStmt->fetchAll();
 							foreach ($categories as $cat) {
 								?>
 								<li class="main-nav-list"><a  href="./index.php?id=<?php echo $cat['id'];?>" ><span
-								 class="lnr lnr-arrow-right"></span><?php echo $cat['name'];  ?></a>
+								 class="lnr lnr-arrow-right"></span><?php echo escape($cat['name']);  ?></a>
 								</li>
 								<?php
 							}
@@ -120,58 +128,8 @@
 								<?php
 							}
 						?>
-						
-						<!-- single product -->
-						<!-- <div class="col-lg-4 col-md-6">
-							<div class="single-product">
-								<img class="img-fluid" src="img/product/p2.jpg" alt="">
-								<div class="product-details">
-									<h6>addidas New Hammer sole
-										for Sports person</h6>
-									<div class="price">
-										<h6>$150.00</h6>
-										<h6 class="l-through">$210.00</h6>
-									</div>
-									<div class="prd-bottom">
-
-										<a href="" class="social-info">
-											<span class="ti-bag"></span>
-											<p class="hover-text">add to bag</p>
-										</a>
-										<a href="" class="social-info">
-											<span class="lnr lnr-move"></span>
-											<p class="hover-text">view more</p>
-										</a>
-									</div>
-								</div>
-							</div>
-						</div> -->
-						<!-- single product -->
-						<!-- <div class="col-lg-4 col-md-6">
-							<div class="single-product">
-								<img class="img-fluid" src="img/product/p3.jpg" alt="">
-								<div class="product-details">
-									<h6>addidas New Hammer sole
-										for Sports person</h6>
-									<div class="price">
-										<h6>$150.00</h6>
-										<h6 class="l-through">$210.00</h6>
-									</div>
-									<div class="prd-bottom">
-
-										<a href="" class="social-info">
-											<span class="ti-bag"></span>
-											<p class="hover-text">add to bag</p>
-										</a>
-										<a href="" class="social-info">
-											<span class="lnr lnr-move"></span>
-											<p class="hover-text">view more</p>
-										</a>
-									</div>
-								</div>
-							</div>
-						</div> -->
 					</div>
+					
 				</section>
 				<!-- End Best Seller -->
 <?php include('footer.php');?>
