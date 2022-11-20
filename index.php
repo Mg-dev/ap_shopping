@@ -16,17 +16,28 @@ if(!empty($_POST['search'])){
 				  }else{
 					$pageno = 1;
 				  }
-				  $numOfrecs = 2;
+				  $numOfrecs = 3;
 				  $offset = ($pageno - 1) * $numOfrecs;
 				  
 				  if(empty($_POST['search']) && empty($_COOKIE['search'])){
-					$stmt = $pdo->prepare("SELECT products.*,categories.name AS category_name FROM products LEFT JOIN categories ON products.category_id = categories.id ");
-					$stmt->execute();
-					$rawResult = $stmt->fetchAll();
-					$totalpages = ceil(count($rawResult)/ $numOfrecs);
-					$stmt = $pdo->prepare("SELECT products.*,categories.name AS category_name FROM products LEFT JOIN categories ON products.category_id = categories.id   LIMIT $offset,$numOfrecs");
-					$stmt->execute();
-					$products = $stmt->fetchAll();
+					if(!empty($_GET['id'])){
+						$id = $_GET['id'];
+						$stmt = $pdo->prepare("SELECT products.*,categories.name AS category_name FROM products LEFT JOIN categories ON products.category_id = categories.id WHERE category_id=$id");
+						$stmt->execute();
+						$rawResult = $stmt->fetchAll();
+						$totalpages = ceil(count($rawResult)/ $numOfrecs);
+						$stmt = $pdo->prepare("SELECT products.*,categories.name AS category_name FROM products LEFT JOIN categories ON products.category_id = categories.id WHERE category_id=$id LIMIT $offset,$numOfrecs");
+						$stmt->execute();
+						$products = $stmt->fetchAll();	
+					}else{
+						$stmt = $pdo->prepare("SELECT products.*,categories.name AS category_name FROM products LEFT JOIN categories ON products.category_id = categories.id ");
+						$stmt->execute();
+						$rawResult = $stmt->fetchAll();
+						$totalpages = ceil(count($rawResult)/ $numOfrecs);
+						$stmt = $pdo->prepare("SELECT products.*,categories.name AS category_name FROM products LEFT JOIN categories ON products.category_id = categories.id   LIMIT $offset,$numOfrecs");
+						$stmt->execute();
+						$products = $stmt->fetchAll();
+					}
 				  }else{
 					$searchKey = $_POST['search'] ? $_POST['search'] : $_COOKIE['search'];
 					$stmt = $pdo->prepare("SELECT products.*,categories.name AS category_name FROM products LEFT JOIN categories ON products.category_id = categories.id WHERE products.name LIKE '%$searchKey%' ");
@@ -117,7 +128,7 @@ if(!empty($_POST['search'])){
 													<span class="ti-bag"></span>
 													<p class="hover-text">add to bag</p>
 												</a>
-												<a href="" class="social-info">
+												<a href="product_detail.php?id=<?php echo $product['id']; ?>" class="social-info">
 													<span class="lnr lnr-move"></span>
 													<p class="hover-text">view more</p>
 												</a>

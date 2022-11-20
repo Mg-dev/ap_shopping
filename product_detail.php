@@ -1,4 +1,10 @@
 <?php include('header.php') ?>
+<?php 
+  $stmt = $pdo->prepare('SELECT products.*,categories.name as category_name from products left join categories on products.category_id = categories.id where products.id='.$_GET['id']);
+  $stmt->execute();
+  $product = $stmt->fetch(PDO::FETCH_ASSOC);
+  
+?>
 <!--================Single Product Area =================-->
 <div class="product_image_area">
   <div class="container">
@@ -6,27 +12,25 @@
       <div class="col-lg-6">
         <div class="s_Product_carousel">
           <div class="single-prd-item">
-            <img class="img-fluid" src="img/category/s-p1.jpg" alt="">
+            <img class="img-fluid" src="./images/<?php echo $product['image']; ?>" alt="">
           </div>
           <div class="single-prd-item">
-            <img class="img-fluid" src="img/category/s-p1.jpg" alt="">
+            <img class="img-fluid" src="./images/<?php echo $product['image']; ?>" alt="">
           </div>
           <div class="single-prd-item">
-            <img class="img-fluid" src="img/category/s-p1.jpg" alt="">
+            <img class="img-fluid" src="./images/<?php echo $product['image']; ?>" alt="">
           </div>
         </div>
       </div>
       <div class="col-lg-5 offset-lg-1">
         <div class="s_product_text">
-          <h3>Faded SkyBlu Denim Jeans</h3>
-          <h2>$149.99</h2>
+          <h3><?php echo $product['name']; ?></h3>
+          <h2><?php echo $product['price']; ?></h2>
           <ul class="list">
-            <li><a class="active" href="#"><span>Category</span> : Household</a></li>
-            <li><a href="#"><span>Availibility</span> : In Stock</a></li>
+            <li><a class="active" href="#"><span>Category</span> : <?php  echo $product['category_name']  ?></a></li>
+            <li><a href="#"><span>Availibility</span> : <?php  if($product['quantity']>0){ echo "In Stock";} else { echo "Out of Stock";} ?></a></li>
           </ul>
-          <p>Mill Oil is an innovative oil filled radiator with the most modern technology. If you are looking for
-            something that can make your interior look awesome, and at the same time give you the pleasant warm feeling
-            during the winter.</p>
+          <p><?php echo $product['description']; ?></p>
           <div class="product_count">
             <label for="qty">Quantity:</label>
             <input type="text" name="qty" id="sst" maxlength="12" value="1" title="Quantity:" class="input-text qty">
