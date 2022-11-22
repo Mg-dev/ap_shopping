@@ -53,10 +53,10 @@ include('header.php');
           
                             $totalpages = ceil(count($rawResult)/$numOfrecs);
           
-                            $stmt = $pdo->prepare("SELECT sale_orders.*,users.name FROM sale_orders LEFT JOIN users ON sale_orders.user_id = users.id ORDER BY id ASC LIMIT $offset,$numOfrecs");
+                            $stmt = $pdo->prepare("SELECT sale_orders.*,users.name as user_name FROM sale_orders LEFT JOIN users ON sale_orders.user_id = users.id ORDER BY sale_orders.id ASC LIMIT $offset,$numOfrecs");
                             $stmt->execute();
                             $orders = $stmt->fetchAll();
-                          
+                           
                     ?>
                 <div class="col-12">
                     <div class="card  text-center">
@@ -78,17 +78,17 @@ include('header.php');
                                 <tbody>
                                     <?php 
                                     $i=1;
-                                    foreach($orders as $u){ ?>
-
-                                    <?php
-                                        $userStmt = $pdo->prepare("SELECT * FROM users WHERE id=".$u['user_id']);
-                                        $userStmt->execute();
-                                        $userResult = $userStmt->fetch();
-                                    ?>
+                                    foreach($orders as $u){
+                                        ?>
                                     <tr>
+                                        <?php 
+                                            $userStmt = $pdo->prepare("SELECT * FROM users WHERE id=".$u['user_id']);
+                                            $userStmt->execute();
+                                            $user = $userStmt->fetch();  
+                                         ?>
 
-                                        <th><?php echo $i  ?></th>
-                                        <td><?php echo escape($userResult['name']); ?></td>
+                                        <th><?php echo $i;  ?></th>
+                                        <td><?php echo escape($user['name']); ?></td>
                                         <td><?php echo escape($u['total_price']); ?></td>
                                         <td><?php echo escape(date('Y-m-d'),strtotime($u['order_date'])); ?></td>
                                         <td>
@@ -97,7 +97,7 @@ include('header.php');
                                                     <a href="order_details.php?id=<?php echo $u['id']; ?>"><button class="btn btn-dark me-2 ">View</button></a>
                                                 </div>
                                                 <div class="container d-flex">
-                                                    <a href="user_delete.php?id=<?php echo $u['id']; ?>"
+                                                    <a href="order_delete.php?id=<?php echo $u['id']; ?>"
                                                         onclick="return confirm('Are you sure, you want to delete this post?')"
                                                     >
                                                     <button class="btn btn-danger ">Delete</button>

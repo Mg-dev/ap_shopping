@@ -75,7 +75,7 @@ function subwords( $str, $max = 24, $char = ' ', $end = '...' ) {
                         }else{
                             $pageno = 1;
                         }
-                        $numOfrecs = 1;
+                        $numOfrecs = 3;
                         $offset = ($pageno - 1) * $numOfrecs;
 
                         if(empty($_POST['search'])&&empty($_COOKIE['search'])){

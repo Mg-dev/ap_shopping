@@ -2,7 +2,6 @@
 
 session_start();
 require '../config/config.php';
-require '../config/common.php';
 if(empty($_SESSION['user_id'] && $_SESSION['logged_in'])){
     header('Location: login.php');
 }
@@ -92,9 +91,7 @@ include('header.php');
                                         <td><?php echo escape(date('Y-m-d'),strtotime($sorder['order_date'])); ?></td>
                                         <td>
                                             <div class="btn-group">
-                                                <div class="container">
-                                                    <a href="order_details.php?id=<?php $sorder['id']; ?>"><button class="btn btn-dark me-2 ">View</button></a>
-                                                </div>
+                                                
                                                 <div class="container d-flex">
                                                    
                                                     <button class="btn btn-danger ">Delete</button>
