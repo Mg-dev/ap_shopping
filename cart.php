@@ -90,7 +90,7 @@
                                     <td>
                                         <div class="checkout_btn_inner d-flex ">
                                             <a class="gray_btn" href="clearall.php">Clear All</a>
-                                            <a class="primary-btn" href="ap_shopping_home.php">Continue Shopping</a>
+                                            <a class="primary-btn" href="home.php">Continue Shopping</a>
                                             <a class="gray_btn" href="sale_order.php">Order Submit</a>
                                         </div>
                                     </td>

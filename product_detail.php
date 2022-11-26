@@ -1,5 +1,6 @@
 <?php include('header.php') ?>
 <?php 
+
   $stmt = $pdo->prepare('SELECT products.*,categories.name as category_name from products left join categories on products.category_id = categories.id where products.id='.$_GET['id']);
   $stmt->execute();
   $product = $stmt->fetch();

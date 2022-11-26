@@ -1,7 +1,11 @@
 
 <?php include('header.php') ?>
 <?php
-    if(!empty($_SESSION['user_id'])){
+if(empty($_SESSION['user_id'] && $_SESSION['logged_in'])){
+	header('Location: index.php');
+  }
+if($_SESSION['cart']){
+	if(!empty($_SESSION['user_id'])){
         $userId = $_SESSION['user_id'];
         $total = 0;
         date_default_timezone_set('Asia/Yangon');
@@ -15,7 +19,7 @@
         }
         $stmt = $pdo->prepare("INSERT INTO sale_orders(user_id,total_price,order_date) VALUES (:user_id,:total_price,:order_date)");
         $result = $stmt->execute(
-            array(':user_id'=>$userId,':total_price'=>$total,':order_date'=>$date)
+            array(':user_id'=>$userId,':total_price'=>$total,':order_date'=>date('Y-m-d H:i:s'))
         );
         // print_r($result);
         // exit();
@@ -34,15 +38,12 @@
 			$updatedQty = $qResult['quantity']-$qty;
 			$updatedStmt = $pdo->prepare("UPDATE products SET quantity=:qty where id='$pid'");
 			$result = $updatedStmt->execute(array(':qty'=>$updatedQty));
-			if($result){
-				header("Location: ap_shopping_home.php");
-			}
             }
             unset($_SESSION['cart']);
         }
-        
-        
     }
+}
+    
     
                                         
                                     
@@ -50,18 +51,7 @@
 	<!-- End Header Area -->
 
 	<!-- Start Banner Area -->
-	<section class="banner-area organic-breadcrumb">
-		<div class="container">
-			<div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
-				<div class="col-first">
-					<h1>Confirmation</h1>
-					<nav class="d-flex align-items-center">
-						<a href="ap_shopping_home.php">Home<span class="lnr lnr-arrow-right"></span></a>
-					</nav>
-				</div>
-			</div>
-		</div>
-	</section>
+	
 	<!-- End Banner Area -->
 
 	<!--================Order Details Area =================-->

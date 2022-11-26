@@ -21,7 +21,7 @@
 				$_SESSION['user_id'] = $user['id'];
 				$_SESSION['username'] = $user['name'];
 				$_SESSION['logged_in'] = time();
-				header('Location: ap_shopping_home.php');
+				header('Location: home.php');
 			}
 			
 		}
@@ -76,7 +76,7 @@
 			<nav class="navbar navbar-expand-lg navbar-light main_box">
 			<div class="container">
 					<!-- Brand and toggle get grouped for better mobile display -->
-					<a class="navbar-brand logo_h" href="index.html"><h4>AP Shopping<h4></a>
+					<a class="navbar-brand logo_h" href="home.php"><h4>AP Shopping<h4></a>
 					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
 					 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 						<span class="icon-bar"></span>
@@ -108,10 +108,9 @@
 	<section class="banner-area organic-breadcrumb">
 		<div class="container">
 			<div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
-				<div class="col-first">
+				<div class="col-first" style="margin-right:100px;">
 					<h1>Login/Register</h1>
 					<nav class="d-flex align-items-center">
-						<a href="index.html">Home<span class="lnr lnr-arrow-right"></span></a>
 						<a href="register.php">Login/Register</a>
 					</nav>
 				</div>

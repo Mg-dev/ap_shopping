@@ -1,4 +1,5 @@
 <?php
+
 if(!empty($_POST['search'])){
 	setcookie('search',$_POST['search'], time() + (86400*30) , '/');
   }else{
@@ -9,7 +10,7 @@ if(!empty($_POST['search'])){
   }
 ?>
 <?php include('header.php') ?>
-  
+
 <?php
 				if(!empty($_GET['pageno'])){
 					$pageno = $_GET['pageno'];
@@ -57,8 +58,9 @@ if(!empty($_POST['search'])){
 				<div class="sidebar-categories">
 					<div class="head">Browse Categories</div>
 					<ul class="main-categories">
-					<li class="main-nav-list"><a  href="./index.php" ><span
-								 class="lnr lnr-arrow-right"></span>All</a>
+					<li class="main-nav-list">
+						<a  href="./home.php" >
+							<span class="lnr lnr-arrow-right"></span>All</a>
 								</li>
 						<?php
 						$catStmt = $pdo->prepare("SELECT * FROM categories");
@@ -66,15 +68,12 @@ if(!empty($_POST['search'])){
 						$categories = $catStmt->fetchAll();
 							foreach ($categories as $cat) {
 								?>
-								<li class="main-nav-list"><a  href="./index.php?id=<?php echo $cat['id'];?>" ><span
+								<li class="main-nav-list"><a  href="./home.php?id=<?php echo $cat['id'];?>" ><span
 								 class="lnr lnr-arrow-right"></span><?php echo escape($cat['name']);  ?></a>
 								</li>
 								<?php
 							}
 						?>
-						
-
-						
 					</ul>
 				</div>
 			</div>
@@ -110,6 +109,10 @@ if(!empty($_POST['search'])){
 								<div class="col-lg-4 col-md-6">
 									<div class="single-product">
 										<img class="img-fluid" src="./images/<?php echo $product['image']; ?>" alt="">
+										<form action="addto_cart.php" method="post">
+										<input type="hidden" name="_token" value="<?php echo $_SESSION['_token']; ?>" />
+										<input type="hidden" name="qty" value="1">
+										<input type="hidden" name="id" value="<?php echo escape($product['id']); ?>">
 										<div class="product-details">
 											<h6><?php echo $product['name']; ?></h6>
 											<div class="price">
@@ -117,17 +120,19 @@ if(!empty($_POST['search'])){
 												<h6 class="l-through"><?php echo $product['price']+5000; ?></h6>
 											</div>
 											<div class="prd-bottom">
-
-												<a href="" class="social-info">
+												<div class="social-info">
+												<button style="display:contents" type="submit">
 													<span class="ti-bag"></span>
-													<p class="hover-text">add to bag</p>
-												</a>
+													<p class="hover-text" style="left:25px;">add to bag</p>
+												</button>
+												</div>
 												<a href="product_detail.php?id=<?php echo $product['id']; ?>" class="social-info">
 													<span class="lnr lnr-move"></span>
 													<p class="hover-text">view more</p>
 												</a>
 											</div>
 										</div>
+										</form>
 									</div>
 								</div>
 								<?php

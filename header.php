@@ -2,6 +2,9 @@
 session_start();
 require('./config/common.php');	
 require('./config/config.php');
+if(empty($_SESSION['user_id'] && $_SESSION['logged_in'])){
+	header('Location: index.php');
+  }
 ?>
 <!DOCTYPE html>
 <html lang="zxx" class="no-js">
@@ -43,7 +46,7 @@ require('./config/config.php');
 			<nav class="navbar navbar-expand-lg navbar-light main_box">
 				<div class="container">
 					<!-- Brand and toggle get grouped for better mobile display -->
-					<a class="navbar-brand logo_h" href="ap_shopping_home.php"><h4>AP Shopping<h4></a>
+					<a class="navbar-brand logo_h" href="home.php"><h4>AP Shopping<h4></a>
 					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
 					 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 						<span class="icon-bar"></span>
@@ -92,12 +95,17 @@ require('./config/config.php');
 	<!-- End Header Area -->
 
 	<!-- Start Banner Area -->
-	<section class="banner-area organic-breadcrumb" style="margin-bottom:0 !important">
+	<section class="banner-area organic-breadcrumb" style="margin-bottom:10px!important;margin-top:160px;margin-right:70px">
 		<div class="container">
 			<div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
-				<div class="col-first">
+				<div class="col-first" style="margin-right:150px;">
 					<h1>Welcome</h1>
-
+					<?php if($_SESSION) {?>
+						<h1 class="d-inline"><?php echo $_SESSION['username'] ?></h1>
+					<?php
+					}
+					?>
+					<a href="logout.php"><button class="primary-btn d-inline" style="border: 0">Logout</button></a>
 				</div>
 			</div>
 		</div>

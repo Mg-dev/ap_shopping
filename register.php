@@ -42,7 +42,7 @@ if($_POST){
 				array("name"=>$name,"email"=>$email,"password"=>$password,"phone"=>$phone,"address"=>$address,)
 			);
 			if($result){
-				echo "<script>alert('You have been registerd sucessfully!Please Login..');window.location.href='login.php';</script>";
+				echo "<script>alert('You have been registerd sucessfully!Please Login..');window.location.href='index.php';</script>";
 			}
 			
 		}
@@ -122,11 +122,11 @@ if($_POST){
 	<section class="banner-area organic-breadcrumb">
 		<div class="container">
 			<div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
-				<div class="col-first">
+				<div class="col-first " style="margin-right:100px">
 					<h1>Login/Register</h1>
 					<nav class="d-flex align-items-center">
 						<a href="index.html">Home<span class="lnr lnr-arrow-right"></span></a>
-						<a href="login.php">Login/Register</a>
+						<a href="index.php">Login/Register</a>
 					</nav>
 				</div>
 			</div>
@@ -181,7 +181,7 @@ if($_POST){
 							
 							<div class="col-md-12 form-group">
 								<button type="submit" value="submit" class="primary-btn">Register</button>
-                                <a href="login.php" class="btn btn-primary text-white">Login</a>
+                                <a href="index.php" class="btn btn-primary text-white">Login</a>
 
 								
 							</div>
