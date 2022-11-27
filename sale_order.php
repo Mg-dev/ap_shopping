@@ -42,11 +42,7 @@ if($_SESSION['cart']){
             unset($_SESSION['cart']);
         }
     }
-}
-    
-    
-                                        
-                                    
+}                        
 ?>
 	<!-- End Header Area -->
 

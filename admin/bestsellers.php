@@ -70,34 +70,13 @@ function subwords( $str, $max = 24, $char = ' ', $end = '...' ) {
               <!-- /.card-header -->
 
               <?php  
-                    
-                    if(!empty($_GET['pageno'])){
-                            $pageno = $_GET['pageno'];
-                        }else{
-                            $pageno = 1;
-                        }
-                        $numOfrecs = 3;
-                        $offset = ($pageno - 1) * $numOfrecs;
-
-                        if(empty($_POST['search'])&&empty($_COOKIE['search'])){
-                            $stmt = $pdo->prepare("SELECT products.*,categories.name AS category_name FROM products LEFT JOIN categories ON products.category_id = categories.id ORDER BY id ASC");
-                            $stmt->execute();
-                            $rawResult = $stmt->fetchAll();
-                            $totalpages = ceil(count($rawResult)/$numOfrecs);
-                            $stmt = $pdo->prepare("SELECT products.*,categories.name AS category_name FROM products LEFT JOIN categories ON products.category_id = categories.id ORDER BY id ASC LIMIT $offset,$numOfrecs");
-                            $stmt->execute();
-                            $products = $stmt->fetchAll();
-                          }else{
-                            $searchKey = $_POST['search'] ? $_POST['search'] : $_COOKIE['search'];
-                            $stmt = $pdo->prepare("SELECT products.*,categories.name AS category_name FROM products LEFT JOIN categories ON products.category_id = categories.id   WHERE  products.name LIKE '%$searchKey%'   ORDER BY id DESC");
-                            $stmt->execute();
-                            $rawResult = $stmt->fetchAll();  
-                            $totalpages = ceil(count($rawResult)/ $numOfrecs);
-                            $stmt = $pdo->prepare("SELECT products.*,categories.name AS category_name FROM products LEFT JOIN categories ON products.category_id = categories.id  WHERE products.name LIKE '%$searchKey%'  ORDER BY id DESC LIMIT $offset,$numOfrecs");
-                            $stmt->execute();
-                            $products = $stmt->fetchAll();  
-                          }
-                    ?>
+                  
+                  $stmt = $pdo->prepare("SELECT * FROM sale_orders LEFT JOIN users ON sale_orders.user_id = users.id WHERE sale_orders.order_date<:from_date AND sale_orders.order_date>=:to_date ORDER BY sale_orders.id asc")  ;
+                  $stmt->execute(
+                  );
+                  $sale_orders = $stmt->fetchAll();
+                 
+                ?>
             <div class="card-body">
                 <table class="table table-bordered">
                   <thead>
@@ -190,3 +169,10 @@ function subwords( $str, $max = 24, $char = ' ', $end = '...' ) {
 
   <!-- Control Sidebar -->
     <?php include('footer.html') ?>
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+  <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+    <script>
+  $(document).ready(function () {
+    $('#dtable').DataTable();
+});
+</script>
