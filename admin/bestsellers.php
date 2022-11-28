@@ -71,64 +71,40 @@ function subwords( $str, $max = 24, $char = ' ', $end = '...' ) {
 
               <?php  
                   
-                  $stmt = $pdo->prepare("SELECT * FROM sale_orders LEFT JOIN users ON sale_orders.user_id = users.id WHERE sale_orders.order_date<:from_date AND sale_orders.order_date>=:to_date ORDER BY sale_orders.id asc")  ;
-                  $stmt->execute(
-                  );
-                  $sale_orders = $stmt->fetchAll();
+                  $stmt = $pdo->prepare("SELECT * FROM sale_order_details LEFT JOIN products ON sale_order_details.product_id = products.id group by product_id having count(product_id)>5");
+                  $stmt->execute();
+                  $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                  
                  
                 ?>
             <div class="card-body">
-                <table class="table table-bordered">
+                <table class="table table-bordered" id="dtable">
                   <thead>
                     <tr>
                       <th style="width: 10px">#</th>
                       <th>name</th>
-                      <th>description</th>
                       <th>image</th>
                       <th>price</th>
-                      <th>quantity</th>
-                      <th>category_name</th>
-                      <th style="width: 40px">Action</th>
                     </tr>
                   </thead>
                   
                   <tbody>
                    <?php
-                      
-                      foreach($products as $product){
+                      $id = 1;
+                      foreach($result as $product){
                         ?>
                       
                         <tr class="p-0">
-                              <td  style="height:100px;"><?php echo $product['id'] ?></td>
+                              <td  style="height:100px;"><?php echo $id; ?></td>
                               <td><?php echo $product['name'] ?></td>
-                              <td><?php echo $product['description'] ?></td>
                               <td><img src="../images/<?php echo $product['image']; ?>" class="img-thumbnail" width="100" alt=""></td>
                               <td><?php echo $product['price'] ?></td>
-                              <td><?php echo $product['quantity'] ?></td>
-                              <td>
-                              <?php echo $product['category_name'] ?>
-                              </td>
-                              <td class="">
-                                <div class="btn-group">
-                                <div class="container">
-                                <a href="product_edit.php?id=<?php echo $product['id']; ?>"><button class="btn btn-warning me-2 ">Edit</button></a>
-                                
-
-                                </div>
-                                <div class="container">
-                                <!-- <?php echo escape($product['id']); ?> -->
-                                <a href="product_delete.php?id=<?php echo escape($product['id']); ?>">
                               
-                                  <button class="btn btn-danger ">Delete</button>
-                                </a>
-
-                                </div>
-                                </div>
-                                
-                              </td>
+                              
                             </tr> 
                         <?php
                       }
+                      $id++;
                    ?>
                             
                           
@@ -139,18 +115,7 @@ function subwords( $str, $max = 24, $char = ' ', $end = '...' ) {
             </div>
                 </table>
               </div>
-              <div class="card-footer clearfix">
-                <ul class="pagination pagination-sm m-0 float-right">
-                  <li class="page-item"><a class="page-link" href="?pageno=1">First</a></li>
-                  <li class="page-item <?php if($pageno<=1) { echo "disabled";}  ?> ">
-                    <a class="page-link" href="<?php if($pageno<=1) { echo "#";} else { echo "?pageno=".($pageno-1);}  ?>">Previous</a>
-                  </li>
-                  <li class="page-item"><a class="page-link" href="#"><?php echo $pageno; ?></a></li>
-                  <li class="page-item <?php if($pageno>=$totalpages) { echo "disabled";}  ?>">
-                    <a class="page-link" href="<?php if($pageno>=$totalpages) { echo "#";} else { echo "?pageno=".($pageno+1);}  ?>">Next</a>
-                  </li>
-                  <li class="page-item"><a class="page-link" href="?pageno=<?php echo $totalpages; ?>">Last</a></li>
-                </ul></div>
+              
             <!-- /.card -->
             </div>
             <!-- /.card -->

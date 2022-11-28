@@ -13,32 +13,7 @@ if($_SESSION['role']!=1){
 }
 ?>
 
-<?php
-function subwords( $str, $max = 24, $char = ' ', $end = '...' ) {
-  $str = trim( $str ) ;
-  $str = $str . $char ;
-  $len = strlen( $str ) ;
-  $words = '' ;
-  $w = '' ;
-  $c = 0 ;
-  for ( $i = 0; $i < $len; $i++ )
-      if ( $str[$i] != $char )
-          $w = $w . $str[$i] ;
-      else
-          if ( ( $w != $char ) and ( $w != '' ) ) {
-              $words .= $w . $char ;
-              $c++ ;
-              if ( $c >= $max ) {
-                  break ;
-              }
-              $w = '' ;
-          }
-  if ( $i+1 >= $len ) {
-      $end = '' ;
-  }
-  return trim( $words ) . $end ;
-}
-?>
+
 
 <?php include('header.php'); ?>
 

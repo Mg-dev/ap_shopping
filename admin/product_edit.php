@@ -8,8 +8,9 @@
       header('Location: login.php');
     }
 
-
+    
     if(!empty($_POST)){
+      
       if(empty($_POST['name']) || empty($_POST['description'])
        || empty($_POST['price']) || empty($_POST['quantity']) 
        || empty($_POST['category_id'])){
@@ -29,60 +30,74 @@
           $categoryErr = "category is required";
         }
        }else{
-        if($_FILES['image']['name'] != null) {
-          $file = "../images/".$_FILES['image']['name'];
-          $imageType = pathinfo($file,PATHINFO_EXTENSION);
-          if($imageType != 'png' && $imageType != 'jpg' &&  $imageType != 'jpeg'){
-            echo "<script>alert('PNG, JPG and JPEG only allow!');window.location.href = 'index.php';</script>";
-          }else{
-            $id = $_POST['id'];
-            $stmt = $pdo->prepare("SELECT * FROM products WHERE id='$id'");
-            $stmt->execute();
-            $result =$stmt->fetch();
-            $deletedImage = "../images/".$result['image'];
-            unlink($deletedImage);
-            $name = $_POST['name'];
-            $description= $_POST['description'];
-            $price = $_POST['price'];
-            $quantity = $_POST['quantity'];
-            $category_id = $_POST['category_id'];
-            $image = $_FILES['image']['name'];
-            move_uploaded_file($_FILES['image']['tmp_name'],$file);
-                $stmt = $pdo->prepare("UPDATE products SET name=:name,description=:description,image=:image,
-                price=:price,quantity=:quantity,category_id=:category_id WHERE id='$id'");
-                $result = $stmt->execute(
-                  array('name'=>$name,'description'=>$description,'image'=>$image,'quantity'=>$quantity,'price'=>$price,'category_id'=>$category_id)
-                );
-                if($result){
-                    echo "<script>alert(' Successfully Updated!');window.location.href = 'index.php';</script>";
+        if(is_numeric($_POST['quantity']) != 1){
+          $quantityErr = "Quantity should be integer value";
+        }  
+        if(is_numeric($_POST['price']) != 1){
+          $priceErr = "Price should be integer value";
+        }
+        if(!empty($quantityErr)&&!empty($priceErr)){
+          if($quantityErr == null && $priceErr == null) {
+            if($_FILES['image']['name'] != null) {
+              $file = "../images/".$_FILES['image']['name'];
+              $imageType = pathinfo($file,PATHINFO_EXTENSION);
+              if($imageType != 'png' && $imageType != 'jpg' &&  $imageType != 'jpeg'){
+                echo "<script>alert('PNG, JPG and JPEG only allow!');window.location.href = 'index.php';</script>";
+              }else{
+               
+                $id = $_POST['id'];
+                $stmt = $pdo->prepare("SELECT * FROM products WHERE id='$id'");
+                $stmt->execute();
+                $result =$stmt->fetch();
+                $deletedImage = "../images/".$result['image'];
+                unlink($deletedImage);
+                $name = $_POST['name'];
+                $description= $_POST['description'];
+                $price = $_POST['price'];
+                $quantity = $_POST['quantity'];
+                $category_id = $_POST['category_id'];
+                $image = $_FILES['image']['name'];
+                move_uploaded_file($_FILES['image']['tmp_name'],$file);
+                    $stmt = $pdo->prepare("UPDATE products SET name=:name,description=:description,image=:image,price=:price,quantity=:quantity,category_id=:category_id WHERE id=:id");
+                    $result = $stmt->execute(
+                      array(':name'=>$name,':description'=>$description,':image'=>$image,':quantity'=>$quantity,':price'=>$price,':category_id'=>$category_id,':id'=>$id)
+                    );
+                    if($result){
+                        echo "<script>alert(' Successfully Updated!');window.location.href = 'index.php';</script>";
+                    }
+              }
+                }else{
+                  $id = $_POST['id'];
+                  $name = $_POST['name'];
+                  $description= $_POST['description'];
+                  $price = $_POST['price'];
+                  $quantity = $_POST['quantity'];
+                  $category_id = $_POST['category_id'];
+                      $stmt = $pdo->prepare("UPDATE products SET name=:name,description=:description,price=:price,quantity=:quantity,category_id=:category_id WHERE id=:id");
+                      
+                      $result = $stmt->execute(
+                        array(':name'=>$name,':description'=>$description,':quantity'=>$quantity,':price'=>$price,':category_id'=>$category_id,':id'=>$id)
+                      );
+                  //     print_r($result);
+                  // exit();
+    
+                      if($result){
+                          echo "<script>alert(' Successfully Updated!');window.location.href = 'index.php';</script>";
+                      }
                 }
+           }
           }
-            }else{
-              $name = $_POST['name'];
-              $description= $_POST['description'];
-              $price = $_POST['price'];
-              $quantity = $_POST['quantity'];
-              $category_id = $_POST['category_id'];
-                  $stmt = $pdo->prepare("UPDATE products SET  name=:name,description=:description,
-                  price=:price,quantity=:quantity,category_id=:category_id WHERE id='$id'");
-                  
-                  $result = $stmt->execute(
-                    array('name'=>$name,'description'=>$description,'quantity'=>$quantity,'price'=>$price,'category_id'=>$category_id)
-                  );
-
-                  if($result){
-                      echo "<script>alert(' Successfully Updated!');window.location.href = 'index.php';</script>";
-                  }
-            }
-       }
+        }  
+        
+        
        
     }
-    $product_id = $_GET['id'];
+    
     $stmt = $pdo->prepare("SELECT * FROM products WHERE id=:id");
     $stmt->execute(
-      array('id'=>$product_id)
+      array('id'=>$_GET['id'])
     );
-    $product = $stmt->fetch();                    
+    $product = $stmt->fetch();                      
 ?>
 
 

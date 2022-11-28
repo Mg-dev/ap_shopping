@@ -20,7 +20,6 @@ include('header.php');
         <div class="row mb-2">
           <div class="col-sm-12 d-flex justify-content-between">
             <h1 class="m-0">Starter Page</h1>
-            <a href="user_add.php"><button class="btn btn-success">Add user</button></a>
           </div><!-- /.col -->
           
         </div><!-- /.row -->
@@ -61,7 +60,7 @@ include('header.php');
                 <div class="col-12">
                     <div class="card  text-center">
                         <div class="card-header d-flex justify-content-start">
-                            <h3 class="card-title">User listing</h3>
+                            <h3 class="card-title">Order listing</h3>
                         </div>
                         <div class="card-body">
                             <table class="table table-striped">
@@ -84,7 +83,9 @@ include('header.php');
                                         <?php 
                                             $userStmt = $pdo->prepare("SELECT * FROM users WHERE id=".$u['user_id']);
                                             $userStmt->execute();
-                                            $user = $userStmt->fetch();  
+                                            $user = $userStmt->fetch(PDO::FETCH_ASSOC);  
+                                            
+
                                          ?>
 
                                         <th><?php echo $i;  ?></th>

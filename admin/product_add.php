@@ -32,8 +32,14 @@
             $descriptionErr = "description is required!";
           }   
     }else{
-      
-            $file = '../images/'.($_FILES['image']['name']);
+      if(is_numeric($_POST['quantity']) != 1){
+        $quantityErr = "Quantity should be integer value";
+      }  
+      if(is_numeric($_POST['price']) != 1){
+        $priceErr = "Price should be integer value";
+      }  
+      if($quantityErr == null && $priceErr == null) {
+        $file = '../images/'.($_FILES['image']['name']);
             $imageType = pathinfo($file,PATHINFO_EXTENSION);
             
             if($imageType != 'png' && $imageType != 'jpg' &&  $imageType != 'jpeg' &&  $imageType != 'webp'){
@@ -55,6 +61,7 @@
                 echo "<script>alert('Created Successfully!');;window.location.href = 'index.php'</script>";
             }
           }
+      }
     }
   }
         
@@ -152,7 +159,7 @@
                         <div class="form-group">
                           <div>
                                 <label for="">Price</label><br>
-                                <input type="text" class="form-control" name="price">
+                                <input type="number" class="form-control" name="price">
                                 <span class="text-danger">
                           </div>
                           <span class="text-danger">
@@ -164,7 +171,7 @@
                         <div class="form-group">
                           <div>
                                 <label for="">Qty</label><br>
-                                <input type="text" class="form-control" name="quantity">
+                                <input type="number" class="form-control" name="quantity">
                                 <span class="text-danger">
                           </div>
                           <span class="text-danger">
